@@ -12,4 +12,4 @@
     [Cilas Marques](https://github.com/cilasmarques), 
     [Felipe Amorim](https://github.com/FelipeAmorimFerreira), 
     [Gabriel Carvalho](https://github.com/GabLimaC),  
-    [Wesley Romero],
+    Wesley Romero
