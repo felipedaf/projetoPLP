@@ -11,4 +11,4 @@
 ##Integrantes do grupo
     [Cilas Marques](https://github.com/cilasmarques), 
     [Felipe Amorim](https://github.com/FelipeAmorimFerreira), 
-    [Gabriel Carvalho](https://github.com/GabLimaC), [Wesley Romero] (https://github.com/wesleyrcb)
+    [Gabriel Carvalho](https://github.com/GabLimaC), [Wesley Romero](https://github.com/wesleyrcb)
