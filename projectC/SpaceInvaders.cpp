@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 #include <string>
 
@@ -12,19 +13,6 @@ struct space_component {
 };
 
 space_component space[5][5];
-void buildSpace(){
-    for(int i = 0; i < 5; i++){
-        for(int j = 0; j < 5; j++){
-            if (i < 2) {
-                createSpaceComponent(i, j, 1, true, true, false);
-            } else if ( i == 4 && j == 2) {
-                createSpaceComponent(i, j, 3, false, true, false);
-            } else {
-                createSpaceComponent(i, j, 0, false, false, true);
-            } 
-        }   
-    }
-};
 
 void createSpaceComponent(int i, int j, int hp, bool isEnemy, bool isSpaceShip, bool isVacuo) {
     space_component component;
@@ -34,6 +22,21 @@ void createSpaceComponent(int i, int j, int hp, bool isEnemy, bool isSpaceShip, 
     component.isVacuo     = isVacuo;
     space[i][j] = component;
 };
+
+void buildSpace(){
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < 5; j++){
+            if (i < 2) {
+                createSpaceComponent(i, j, 1, true, true, false); //inimiga
+            } else if ( i == 4 && j == 2) {
+                createSpaceComponent(i, j, 3, false, true, false); //jogador
+            } else {
+                createSpaceComponent(i, j, 0, false, false, true); //vacuo
+            } 
+        }   
+    }
+};
+
 
 
 string toString(space_component component) {
@@ -52,28 +55,40 @@ string toString(space_component component) {
 
 int getPlayerPosition(){
     for(int j = 0; j < 5; j++){
-        if (space[4][j].hp == 3){
+        if (!space[4][j].isEnemy && space[4][j].isSpaceShip){
             return j;
         } 
     } return 0; 
 };
 
 void move(bool left){
-    space_component playerSpaceShip = space[4][getPlayerPosition()];
-    
-    for (int j = 0; j < 5; j++){
-        if (!left && (getPlayerPosition() != 4)) {
-            space[4][j] = createSpaceComponent(4, j, false, false, true);
-            space[4][getPlayerPosition() + 1] = playerSpaceShip;  
-        } else if (left && (getPlayerPosition() != 0)) {
-            space[4][j] = createSpaceComponent(4, j, false, false, true);
-            space[4][getPlayerPosition() - 1] = playerSpaceShip; 
-        } 
+    int hpPlayerShip = space[4][getPlayerPosition()].hp;
+    int positionPlayerShip = getPlayerPosition();
+
+    for (int j = 0; j < 5; j++) {
+        if (left && positionPlayerShip != 0) {
+            createSpaceComponent(4, positionPlayerShip, 0, false, false, true); //colocando o vacuo           
+            createSpaceComponent(4, positionPlayerShip - 1, hpPlayerShip, false, true, false); //atualiza posicao nave player 
+        } else if (!left && positionPlayerShip != 4){
+            createSpaceComponent(4, positionPlayerShip, 0, false, false, true); //colocando o vacuo           
+            createSpaceComponent(4, positionPlayerShip + 1, hpPlayerShip, false, true, false); //atualiza posicao nave player 
+        }
     }
+};
+
+void printGame() {
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < 5; j++){
+            cout << toString(space[i][j]);
+        }   
+        cout << endl;
+     }
 };
 
 void menu(){
     while (true){
+        system("clear");
+        printGame();
         string option;
         cout << "A = Ir para esquerda" << endl;
         cout << "D = Ir para direita" << endl;
@@ -92,17 +107,9 @@ void menu(){
     }
 };
 
-void printGame() {
-    for(int i = 0; i < 5; i++){
-        for(int j = 0; j < 5; j++){
-            cout << toString(space[i][j]);
-        }   
-        cout << endl;
-     }
-};
-
 
 int main(){
     buildSpace();
+    menu();
     printGame();
 };
