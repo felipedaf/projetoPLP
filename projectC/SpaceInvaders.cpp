@@ -10,16 +10,18 @@ struct space_component {
     bool isEnemy; // sefor inimigo, hp eh 1, se nao 3
     bool isSpaceShip; //se for falso eh um tiro
     bool isVacuo;
+    bool isShot;
 };
 
 space_component space[5][5];
 
-void createSpaceComponent(int i, int j, int hp, bool isEnemy, bool isSpaceShip, bool isVacuo) {
+void createSpaceComponent(int i, int j, int hp, bool isEnemy, bool isSpaceShip, bool isVacuo, bool isShot) {
     space_component component;
     component.hp          = hp;
     component.isEnemy     = isEnemy;
     component.isSpaceShip = isSpaceShip;
     component.isVacuo     = isVacuo;
+    component.isShot      = isShot;
     space[i][j] = component;
 };
 
@@ -27,33 +29,31 @@ void buildSpace(){
     for(int i = 0; i < 5; i++){
         for(int j = 0; j < 5; j++){
             if (i < 2) {
-                createSpaceComponent(i, j, 1, true, true, false); //inimiga
+                createSpaceComponent(i, j, 1, true, true, false, false); //inimiga
             } else if ( i == 4 && j == 2) {
-                createSpaceComponent(i, j, 3, false, true, false); //jogador
+                createSpaceComponent(i, j, 3, false, true, false, false); //jogador
             } else {
-                createSpaceComponent(i, j, 0, false, false, true); //vacuo
+                createSpaceComponent(i, j, 0, false, false, true, false); //vacuo
             } 
         }   
     }
 };
 
-
-
 string toString(space_component component) {
     if (component.isVacuo){
         return "   ";    
-    } else if(component.isSpaceShip && component.isEnemy){
+    } else if (component.isShot && component.isEnemy) {
+        return " v ";
+    } else if (component.isShot && !component.isEnemy) {
+        return " ^ ";
+    } else if (component.isSpaceShip && component.isEnemy){
         return " V ";
     } else if (component.isSpaceShip && !component.isEnemy) {
         return " A ";
-    } else if (!component.isSpaceShip && component.isEnemy) {
-        return " v ";
-    } else if (!component.isSpaceShip && !component.isEnemy) {
-        return " ^ ";
     }
 };
 
-int getPlayerPosition(){
+int getShipPosition(){
     for(int j = 0; j < 5; j++){
         if (!space[4][j].isEnemy && space[4][j].isSpaceShip){
             return j;
@@ -61,17 +61,29 @@ int getPlayerPosition(){
     } return 0; 
 };
 
-void move(bool left){
-    int hpPlayerShip = space[4][getPlayerPosition()].hp;
-    int positionPlayerShip = getPlayerPosition();
+int moveShot(){
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < 5; j++){
+            if (space[i][j].isShot && !space[i][j].isEnemy){
+                createSpaceComponent(i, j, 0, false, false, true, false); //colocando o vacuo           
+                createSpaceComponent(i-1, j, 0, false, false, false, true); //colocando o tiro  
+                break;         
+            }     
+        }   
+    }
+};
+
+void moveSpaceShip(bool left){
+    int hpPlayerShip = space[4][getShipPosition()].hp;
+    int positionPlayerShip = getShipPosition();
 
     for (int j = 0; j < 5; j++) {
         if (left && positionPlayerShip != 0) {
-            createSpaceComponent(4, positionPlayerShip, 0, false, false, true); //colocando o vacuo           
-            createSpaceComponent(4, positionPlayerShip - 1, hpPlayerShip, false, true, false); //atualiza posicao nave player 
+            createSpaceComponent(4, positionPlayerShip, 0, false, false, true, false); //colocando o vacuo           
+            createSpaceComponent(4, positionPlayerShip - 1, hpPlayerShip, false, true, false, false); //atualiza posicao nave player 
         } else if (!left && positionPlayerShip != 4){
-            createSpaceComponent(4, positionPlayerShip, 0, false, false, true); //colocando o vacuo           
-            createSpaceComponent(4, positionPlayerShip + 1, hpPlayerShip, false, true, false); //atualiza posicao nave player 
+            createSpaceComponent(4, positionPlayerShip, 0, false, false, true, false); //colocando o vacuo           
+            createSpaceComponent(4, positionPlayerShip + 1, hpPlayerShip, false, true, false, false); //atualiza posicao nave player 
         }
     }
 };
@@ -83,7 +95,13 @@ void printGame() {
         }   
         cout << endl;
      }
+    cout << "HP : " << space[4][getShipPosition()].hp << endl;
 };
+
+void shot(){
+    int positionPlayerShip = getShipPosition();
+    createSpaceComponent(3, positionPlayerShip, 2, false, false, false, true); //tiro           
+}
 
 void menu(){
     while (true){
@@ -98,15 +116,19 @@ void menu(){
         bool left = true;
 
         if (option == "A") {
-            move(left);            
+            moveShot();
+            moveSpaceShip(left);            
         } else if (option == "D") {
-            move(!left);
-        } else {
-            break;            
+            moveShot();
+            moveSpaceShip(!left);
+        } else if (option == "W") {
+            moveShot();
+            shot();
+        } else if (option == "S") {
+            break;
         }
     }
 };
-
 
 int main(){
     buildSpace();
