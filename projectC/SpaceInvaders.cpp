@@ -65,9 +65,14 @@ int moveShot(){
     for(int i = 0; i < 5; i++){
         for(int j = 0; j < 5; j++){
             if (space[i][j].isShot && !space[i][j].isEnemy){
-                createSpaceComponent(i, j, 0, false, false, true, false); //colocando o vacuo           
-                createSpaceComponent(i-1, j, 0, false, false, false, true); //colocando o tiro  
-                break;         
+                if (space[i-1][j].isSpaceShip && space[i-1][j].isEnemy){
+                    createSpaceComponent(i, j, 0, false, false, true, false); //colocando o vacuo           
+                    createSpaceComponent(i-1, j, 0, false, false, true, false); //colocando o vacuo  
+                } else {
+                    createSpaceComponent(i, j, 0, false, false, true, false); //colocando o vacuo           
+                    createSpaceComponent(i-1, j, 0, false, false, false, true); //colocando o tiro  
+                    break;  
+                }       
             }     
         }   
     }
@@ -108,23 +113,23 @@ void menu(){
         system("clear");
         printGame();
         string option;
-        cout << "A = Ir para esquerda" << endl;
-        cout << "D = Ir para direita" << endl;
-        cout << "W = Atirar" << endl;
-        cout << "S = Sair" << endl;
+        cout << "a = Ir para esquerda" << endl;
+        cout << "d = Ir para direita" << endl;
+        cout << "w = Atirar" << endl;
+        cout << "s = Sair" << endl;
         cin >> option;
         bool left = true;
 
-        if (option == "A") {
+        if (option == "a") {
             moveShot();
             moveSpaceShip(left);            
-        } else if (option == "D") {
+        } else if (option == "d") {
             moveShot();
             moveSpaceShip(!left);
-        } else if (option == "W") {
+        } else if (option == "w") {
             moveShot();
             shot();
-        } else if (option == "S") {
+        } else if (option == "s") {
             break;
         }
     }
