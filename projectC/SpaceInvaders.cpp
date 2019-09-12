@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 struct space_component {
     int hp;
     bool isEnemy; // sefor inimigo, hp eh 1, se nao 3
@@ -12,14 +11,6 @@ struct space_component {
 };
 
 space_component space[5][5];
-
-void createSpaceShip(int i, int j, int hp, bool isEnemy, bool isSpaceShip) {
-    space_component component;
-    component.hp          = hp;
-    component.isEnemy     = isEnemy;
-    component.isSpaceShip = isSpaceShip;
-    space[i][j] = component;
-};
 
 void buildSpace(){
     for(int i = 0; i < 5; i++){
@@ -33,23 +24,74 @@ void buildSpace(){
     }
 };
 
-void menu(){
-//    while (true){
- //          "A = Ir para esquerda \n
-   //         D = Ir para direita  \n
-     //       W = Atirar           \n
-       //     S = Sair             \n");
-    //}
+void createSpaceShip(int i, int j, int hp, bool isEnemy, bool isSpaceShip) {
+    space_component component;
+    component.hp          = hp;
+    component.isEnemy     = isEnemy;
+    component.isSpaceShip = isSpaceShip;
+    space[i][j] = component;
+};
+
+
+string toString(space_component component) {
+    if(component.isSpaceShip && component.isEnemy){
+        return " V ";
+    } else if (component.isSpaceShip && !component.isEnemy) {
+        return " A ";
+    } else if (!component.isSpaceShip && component.isEnemy) {
+        return " v ";
+    } else if (component.hp == 0) {
+        return "   ";
+    } else if (!component.isSpaceShip && !component.isEnemy) {
+        return " ^ ";
+    }
+};
+
+int getPlayerPosition(){
+    for(int j = 0; j < 5; j++){
+        if (space[4][j].hp == 3){
+            return j;
+        } 
+    } return 0; 
+};
+
+void move(bool left){
+    if (!left && (getPlayerPosition() != 4)){
+        space[4]
+    }
+};
+
+void shot(){
+    for ()
 
 };
 
-int main(){
-    buildSpace();
+void menu(){
+    while (true){
+        cout << "A = Ir para esquerda" << endl;
+        cout << "D = Ir para direita" << endl;
+        cout << "W = Atirar" << endl;
+        cout << "S = Sair" << endl;
+        cin << option;
+
+    if (option == "W"){
+            
+    }
+
+    }
+};
+
+void printGame() {
     for(int i = 0; i < 5; i++){
         for(int j = 0; j < 5; j++){
-            cout << space[i][j].hp;
+            cout << toString(space[i][j]);
         }   
         cout << endl;
      }
-    
+};
+
+
+int main(){
+    buildSpace();
+    printGame();
 };
