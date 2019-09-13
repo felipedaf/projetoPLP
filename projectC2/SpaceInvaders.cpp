@@ -88,7 +88,9 @@ void moveEnemyShot(){
                 if(space[i+1][j].isSpaceShip && !space[i+1][j].isEnemy){
                      createSpaceComponent(i, j, 0, false, false, true, false); //colocando o vacuo         e retira a nave    
                      createSpaceComponent(i+1, j, 0, false, false, true, false); //colocando o vacuo         e retira a nave    
-                     createSpaceComponent(i+1, j, 0, false, true, false, false);                             
+                     createSpaceComponent(i+1, j, 0, false, true, false, false);  
+
+
                      }
                 else{
                     createSpaceComponent(i ,j ,0 ,false ,false ,true ,false);
@@ -152,16 +154,16 @@ void menu(){
 
         if (option == "a") {
             moveSpaceShip(left);            
-            moveEnemyShot();
-            moveShot();
+            //moveEnemyShot();
+            //moveShot();
 
         } else if (option == "d") {
-                moveEnemyShot();
-            moveShot();
+            //    moveEnemyShot();
+            //moveShot();
             moveSpaceShip(!left);
         } else if (option == "w") {
-            moveEnemyShot();
-            moveShot();
+            //moveEnemyShot();
+            //moveShot();
             shot();
         } else if (option == "s") {
             break;
@@ -171,7 +173,6 @@ void menu(){
     }
 };
 
-/*
 void nextFrame(){
     while (true)
     {
@@ -187,18 +188,18 @@ void nextFrame(){
         
         usleep(600000);
     }
-}*/
+}
 
 int main(){
     buildSpace();
     thread t1(menu);
-    //thread t2(nextFrame);
+    thread t2(nextFrame);
     if(t1.joinable()){
         t1.join();
     }
-    //if(t2.joinable()){
-      //  t2.join();
-    //}
+    if(t2.joinable()){
+        t2.join();
+    }
     
     printGame();
 };
