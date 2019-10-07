@@ -102,26 +102,34 @@ spaceToString spaceArray string index
 buildSpace :: SpaceComponent -> SpaceComponent -> SpaceComponent -> [[SpaceComponent]]
 buildSpace enemy vacuo player = take 3 (repeat (take 39 (repeat enemy))) ++ take 18 (repeat (take 39 (repeat vacuo))) ++ [ take 19 (repeat vacuo) ++ [player] ++ take 19 (repeat vacuo)]
 
-main :: IO ()
-main = do
-    let enemy = generateEnemy
-    let player = generatePlayer
-    let vacuo = generateVacuo
-    let space = buildSpace enemy vacuo player
-
-    runGame space
-
-    return ()
-
 runGame :: [[SpaceComponent]] -> IO()
 runGame space = do
+--    print (getIndexOf 0 (space !! 21))
     putStrLn (spaceToString space "" 0)
-    input <- getLine
---    | (input == 'w') = playerShot 
---    | (input == 'a') = playerMove
---    | (input == 'd') = playerMove
-    if (input == "s") then endGame
+    input <- getLine 
+    if (input == "a") then runGame (playerMoveLeft space)
+    else if (input == "d") then runGame (playerMoveRight space)
+    else if (input == "s") then endGame
     else runGame space
+
+playerMoveLeft :: [[SpaceComponent]] -> [[SpaceComponent]]
+playerMoveLeft space = 
+    if (getIndexOf 0 (space !! 21)) > 0 then (take 21 space) ++ [take ((getIndexOf 0 (space !! 21)) - 1) (repeat generateVacuo) ++ [generatePlayer] ++ take (39 - (getIndexOf 0 (space !! 21))) (repeat generateVacuo)]
+    else space
+
+
+playerMoveRight :: [[SpaceComponent]] -> [[SpaceComponent]]
+playerMoveRight space = 
+    if (getIndexOf 0 (space !! 21)) < 38 then (take 21 space) ++ [take ((getIndexOf 0 (space !! 21)) + 1) (repeat generateVacuo) ++ [generatePlayer] ++ take (38 - (getIndexOf 0 (space !! 21))) (repeat generateVacuo)]
+    else space
+
+    
+getIndexOf :: Int -> [SpaceComponent] -> Int
+getIndexOf _ [] = 0
+getIndexOf count (x:xs) = 
+    if (isPlayer x == True) then count
+    else getIndexOf (count + 1) xs   
+
 
 endGame = do
     putStrLn "\n \n \n \n \n \n \n \n \n \n \n \n \n"
@@ -143,3 +151,14 @@ endGame = do
     putStrLn "        |==.___________.==|           "
     putStrLn "        `==.___________.=='           "
     putStrLn " "
+
+main :: IO ()
+main = do
+    let enemy = generateEnemy
+    let player = generatePlayer
+    let vacuo = generateVacuo
+    let space = buildSpace enemy vacuo player
+
+    runGame space
+
+    return ()
