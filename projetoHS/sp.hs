@@ -78,6 +78,6 @@ main = do
     let player = generatePlayer
     let vacuo = generateVacuo
     let space = buildSpace enemy vacuo player
-    print (spaceToString space "" 0)
+    putStrLn (spaceToString space "" 0)
 
     return ()
