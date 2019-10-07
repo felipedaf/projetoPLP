@@ -54,69 +54,37 @@ spaceComponentToString (SpaceComponent {isPlayer = isPlayer, isEnemy = isEnemy, 
     | (isPlayer == True) && (isEnemy == False) && (isShot == True) && (isVacuo == False) = "o" --playerShot
     | otherwise = " " --vacuo
 
+linesToString :: String -> Int -> Int -> [[SpaceComponent]] -> String
+linesToString string line index spaceArray
+    | line == 37 = string
+    | otherwise = linesToString (string ++ spaceComponentToString ((spaceArray !! index) !! line)) (line + 1) index spaceArray
+
 --gera a representacao em string do array (space) 
 spaceToString :: [[SpaceComponent]] -> String -> Int -> String
 spaceToString spaceArray string index
     | index == 22 = string --se chegar na ultima linha, retorna a string final
-    | otherwise = spaceToString spaceArray (string ++ (spaceComponentToString ((spaceArray !! index) !! 0) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 1) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 2) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 3) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 4) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 5) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 6) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 7) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 8) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 9) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 10) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 11) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 12) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 13) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 14) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 15) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 16) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 17) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 18) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 19) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 20) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 21) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 22) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 23) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 24) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 25) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 26) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 27) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 28) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 29) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 30) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 31) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 32) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 33) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 34) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 35) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 36) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 37) 
-        ++ spaceComponentToString ((spaceArray !! index) !! 38)) ++ "\n") (index+1)
+    | otherwise = spaceToString spaceArray (string ++ linesToString "" 0 index spaceArray
+        ++ spaceComponentToString ((spaceArray !! index) !! 38) ++ "\n") (index+1)
 
 -- gera o array (space) composto por spaceComponent
 buildSpace :: SpaceComponent -> SpaceComponent -> SpaceComponent -> [[SpaceComponent]]
 buildSpace enemy vacuo player = take 3 (repeat (take 39 (repeat enemy))) ++ take 18 (repeat (take 39 (repeat vacuo))) ++ [ take 19 (repeat vacuo) ++ [player] ++ take 19 (repeat vacuo)]
 
 playerMoveLeft :: [[SpaceComponent]] -> [[SpaceComponent]]
-playerMoveLeft space = 
-    if (getPlayerPosition 0 (space !! 21)) > 0 then (take 21 space) ++ [take ((getPlayerPosition 0 (space !! 21)) - 1) (repeat generateVacuo) ++ [generatePlayer] ++ take (39 - (getPlayerPosition 0 (space !! 21))) (repeat generateVacuo)]
-    else space
+playerMoveLeft space 
+    | (getPlayerPosition 0 (space !! 21)) > 0 = (take 21 space) ++ [take ((getPlayerPosition 0 (space !! 21)) - 1) (repeat generateVacuo) ++ [generatePlayer] ++ take (39 - (getPlayerPosition 0 (space !! 21))) (repeat generateVacuo)]
+    | otherwise = space
 
 playerMoveRight :: [[SpaceComponent]] -> [[SpaceComponent]]
-playerMoveRight space = 
-    if (getPlayerPosition 0 (space !! 21)) < 38 then (take 21 space) ++ [take ((getPlayerPosition 0 (space !! 21)) + 1) (repeat generateVacuo) ++ [generatePlayer] ++ take (38 - (getPlayerPosition 0 (space !! 21))) (repeat generateVacuo)]
-    else space
+playerMoveRight space
+    | (getPlayerPosition 0 (space !! 21)) < 38 = (take 21 space) ++ [take ((getPlayerPosition 0 (space !! 21)) + 1) (repeat generateVacuo) ++ [generatePlayer] ++ take (38 - (getPlayerPosition 0 (space !! 21))) (repeat generateVacuo)]
+    | otherwise = space
     
 getPlayerPosition :: Int -> [SpaceComponent] -> Int
 getPlayerPosition _ [] = 0
-getPlayerPosition count (x:xs) = 
-    if (isPlayer x == True) then count
-    else getPlayerPosition (count + 1) xs   
+getPlayerPosition count (x:xs) 
+    | (isPlayer x == True) = count
+    | otherwise = getPlayerPosition (count + 1) xs   
 
 endGame = do
     putStrLn "\n \n \n \n \n \n \n \n \n \n \n \n \n"
