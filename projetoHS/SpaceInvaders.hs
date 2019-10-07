@@ -102,34 +102,21 @@ spaceToString spaceArray string index
 buildSpace :: SpaceComponent -> SpaceComponent -> SpaceComponent -> [[SpaceComponent]]
 buildSpace enemy vacuo player = take 3 (repeat (take 39 (repeat enemy))) ++ take 18 (repeat (take 39 (repeat vacuo))) ++ [ take 19 (repeat vacuo) ++ [player] ++ take 19 (repeat vacuo)]
 
-runGame :: [[SpaceComponent]] -> IO()
-runGame space = do
---    print (getIndexOf 0 (space !! 21))
-    putStrLn (spaceToString space "" 0)
-    input <- getLine 
-    if (input == "a") then runGame (playerMoveLeft space)
-    else if (input == "d") then runGame (playerMoveRight space)
-    else if (input == "s") then endGame
-    else runGame space
-
 playerMoveLeft :: [[SpaceComponent]] -> [[SpaceComponent]]
 playerMoveLeft space = 
-    if (getIndexOf 0 (space !! 21)) > 0 then (take 21 space) ++ [take ((getIndexOf 0 (space !! 21)) - 1) (repeat generateVacuo) ++ [generatePlayer] ++ take (39 - (getIndexOf 0 (space !! 21))) (repeat generateVacuo)]
+    if (getPlayerPosition 0 (space !! 21)) > 0 then (take 21 space) ++ [take ((getPlayerPosition 0 (space !! 21)) - 1) (repeat generateVacuo) ++ [generatePlayer] ++ take (39 - (getPlayerPosition 0 (space !! 21))) (repeat generateVacuo)]
     else space
-
 
 playerMoveRight :: [[SpaceComponent]] -> [[SpaceComponent]]
 playerMoveRight space = 
-    if (getIndexOf 0 (space !! 21)) < 38 then (take 21 space) ++ [take ((getIndexOf 0 (space !! 21)) + 1) (repeat generateVacuo) ++ [generatePlayer] ++ take (38 - (getIndexOf 0 (space !! 21))) (repeat generateVacuo)]
+    if (getPlayerPosition 0 (space !! 21)) < 38 then (take 21 space) ++ [take ((getPlayerPosition 0 (space !! 21)) + 1) (repeat generateVacuo) ++ [generatePlayer] ++ take (38 - (getPlayerPosition 0 (space !! 21))) (repeat generateVacuo)]
     else space
-
     
-getIndexOf :: Int -> [SpaceComponent] -> Int
-getIndexOf _ [] = 0
-getIndexOf count (x:xs) = 
+getPlayerPosition :: Int -> [SpaceComponent] -> Int
+getPlayerPosition _ [] = 0
+getPlayerPosition count (x:xs) = 
     if (isPlayer x == True) then count
-    else getIndexOf (count + 1) xs   
-
+    else getPlayerPosition (count + 1) xs   
 
 endGame = do
     putStrLn "\n \n \n \n \n \n \n \n \n \n \n \n \n"
@@ -151,6 +138,15 @@ endGame = do
     putStrLn "        |==.___________.==|           "
     putStrLn "        `==.___________.=='           "
     putStrLn " "
+
+runGame :: [[SpaceComponent]] -> IO()
+runGame space = do
+    putStrLn (spaceToString space "" 0)
+    input <- getLine 
+    if (input == "a") then runGame (playerMoveLeft space)
+    else if (input == "d") then runGame (playerMoveRight space)
+    else if (input == "s") then endGame
+    else runGame space
 
 main :: IO ()
 main = do
