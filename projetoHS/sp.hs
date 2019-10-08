@@ -73,8 +73,8 @@ spaceToString spaceArray string index
 
 --faz movimento do player pra esquerda
 playerMoveLeft :: [[SpaceComponent]] -> [[SpaceComponent]]
-playerMoveLeft space 
-    | (getPlayerPosition 0 (space !! 21)) > 0 = (take 21 space) ++ [take ((getPlayerPosition 0 (space !! 21)) - 1) space ++ [generatePlayer] ++ space !! ((getPlayerPosition 0 (space !! 21)) - 1) ++ drop ((getPlayerPosition 0 (space !! 21)) + 1) space
+playerMoveLeft space      
+    | (getPlayerPosition 0 (space !! 21)) > 0 = (take 21 space) ++ [take ((getPlayerPosition 0 (space !! 21)) - 1) (space !! 21) ++ [generatePlayer] ++ [(space !! 21) !! ((getPlayerPosition 0 (space !! 21)) -1)] ++ drop ((getPlayerPosition 0 (space !! 21)) + 1) (space !! 21)]
     | otherwise = space
 
 --faz movimento do player pra direita
