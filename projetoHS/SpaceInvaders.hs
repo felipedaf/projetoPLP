@@ -94,7 +94,7 @@ endGame = do
     putStrLn "          /   \\     /   \\           "
     putStrLn "         /     )- -(     \\           "       
     putStrLn "        /     ( 6 6 )     \\          "
-    putStrLn "       /       \\   /       \\        "
+    putStrLn "       /       \\ ₆ /       \\        "
     putStrLn "      /         )=(         \\        "
     putStrLn "     /   o   .-- - --.   o   \\       "
     putStrLn "    /    I  /  -   -  \\  I    \\     "
@@ -109,7 +109,7 @@ endGame = do
 
 runGame :: [[SpaceComponent]] -> IO()
 runGame space = do
-    putStrLn (spaceToString space "" 0)
+    putStrLn ((take 9 (repeat "\n")) ++ spaceToString space "" 0) -- printa o game
     input <- getLine 
     if (input == "a") then runGame (playerMoveLeft space)
     else if (input == "d") then runGame (playerMoveRight space)
