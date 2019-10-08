@@ -68,7 +68,7 @@ spaceToString spaceArray string index
 
 -- gera o array (space) composto por spaceComponent
 buildSpace :: SpaceComponent -> SpaceComponent -> SpaceComponent -> [[SpaceComponent]]
-buildSpace enemy vacuo player = take 3 (repeat (take 39 (repeat enemy))) ++ take 18 (repeat (take 39 (repeat vacuo))) ++ [ take 19 (repeat vacuo) ++ [player] ++ take 19 (repeat vacuo)]
+buildSpace enemy vacuo player = take 2 (repeat (take 39 (repeat enemy))) ++ take 19 (repeat (take 39 (repeat vacuo))) ++ [ take 19 (repeat vacuo) ++ [player] ++ take 19 (repeat vacuo)]
 
 playerMoveLeft :: [[SpaceComponent]] -> [[SpaceComponent]]
 playerMoveLeft space 
@@ -109,7 +109,8 @@ endGame = do
 
 runGame :: [[SpaceComponent]] -> IO()
 runGame space = do
-    putStrLn ((take 9 (repeat "\n")) ++ spaceToString space "" 0) -- printa o game
+    putStrLn "\n \n \n \n \n \n \n \n \n \n \n \n \n" -- quebra de linhas
+    putStrLn (spaceToString space "" 0) -- printa o game
     input <- getLine 
     if (input == "a") then runGame (playerMoveLeft space)
     else if (input == "d") then runGame (playerMoveRight space)
