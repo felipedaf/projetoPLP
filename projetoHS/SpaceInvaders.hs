@@ -4,7 +4,8 @@ data SpaceComponent = SpaceComponent  {
     isPlayer :: Bool,
     isEnemy :: Bool,
     isVacuo :: Bool,
-    isShot :: Bool
+    isShot :: Bool,
+    entityLife :: Int
 } deriving (Show, Eq)
 
 generateEnemy :: SpaceComponent
@@ -12,7 +13,8 @@ generateEnemy = SpaceComponent {
     isPlayer = False,
     isEnemy = True,
 	isVacuo = False,
-    isShot = False
+    isShot = False,
+    entityLife = 1
 };
 
 generateEnemyShot :: SpaceComponent
@@ -20,7 +22,8 @@ generateEnemyShot = SpaceComponent {
     isPlayer = False,
     isEnemy = True,
 	isVacuo = False,
-    isShot = True
+    isShot = True,
+    entityLife = 1
 };
 
 generatePlayer :: SpaceComponent
@@ -28,7 +31,8 @@ generatePlayer = SpaceComponent {
     isPlayer = True,
     isEnemy = False,
 	isVacuo = False,
-    isShot = False
+    isShot = False,
+    entityLife = 3
 };
 
 generatePlayerShot :: SpaceComponent
@@ -36,7 +40,8 @@ generatePlayerShot = SpaceComponent {
     isPlayer = True,
     isEnemy = False,
 	isVacuo = False,
-    isShot = True
+    isShot = True,
+    entityLife = 1
 };
 
 generateVacuo :: SpaceComponent
@@ -44,7 +49,8 @@ generateVacuo = SpaceComponent {
     isPlayer = False,
     isEnemy = False,
 	isVacuo = True,
-    isShot = False
+    isShot = False,
+    entityLife = 0
 };
 
 --gera o array (space) composto por spaceComponent
@@ -138,6 +144,7 @@ moveEach space l c
 upShot :: [[SpaceComponent]] -> Int -> Int -> [[SpaceComponent]]
 upShot space l c
     | ((isPlayer ((space!!l)!!c)) && (isShot ((space!!l)!!c)) && (l==0)) = [take c (space!!l) ++ [generateVacuo] ++ drop (c+1) (space!!l)] ++ drop (l+1) space
+    | (isPlayer ((space!!l)!!c)) && (isShot ((space!!l)!!c)) && (l>0) && (isEnemy ((space!!(l - 1))!!c)) && (entityLife ((space!!(l- 1))!!c) == 1) = take (l-1) space  ++ [take c (space!!(l-1)) ++ [generateVacuo] ++ drop (c+1) (space!!(l-1))] ++ [take c (space !! (l)) ++ [generateVacuo] ++ drop (c+1) (space !! (l)) ] ++ drop (l+1) space
     | ((isPlayer ((space!!l)!!c)) && (isShot ((space!!l)!!c)) && (l>0)) = take (l-1) space  ++ [take c (space!!(l-1))++[ generatePlayerShot] ++ drop (c+1) (space!!(l-1))] ++ [take c (space !! (l)) ++ [generateVacuo] ++ drop (c+1) (space !! (l)) ] ++ drop (l+1) space
     | otherwise = space 
 
